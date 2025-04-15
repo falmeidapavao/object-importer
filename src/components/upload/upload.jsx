@@ -22,7 +22,7 @@ function Upload() {
 
     reader.onload = async (event) => {
       try {
-        // Try and load the excel/csv with SheetsJS
+        // Try and load the excel/csv
         const data = new Uint8Array(event.target.result);
         const workbook = XLSX.read(data, { type: "array" });
         const sheetName = workbook.SheetNames[0];
@@ -64,12 +64,12 @@ function Upload() {
   };
 
   // Map excel data that comes from API
-  const mapExcelData = ({ headers = [], data = [] }) => {
+  const mapExcelData = ({ headers, data }) => {
     // Map data that comes from uploaded excel file to a more suitable format
     // Include mapping pointers in the columns and restructure rows
     // Column format: {
     //  "columnName": "Model",
-    //  "mappedTo": { systemFieldId: "model" }
+    //  "mappedTo": "model"
     // }
     // Row format: {
     //  "OID": 1,
