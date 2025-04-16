@@ -15,7 +15,15 @@ const api = {
   },
   getSystemFields: { url: `${baseUrl}/fields`, config: { method: "GET" } },
   sendMapping: { url: `${baseUrl}/mapping` },
-  confirm: { url: `${baseUrl}/confirm` },
+  confirm: {
+    url: `${baseUrl}/confirm`,
+    config: {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  },
 };
 
 export default api;

@@ -54,6 +54,8 @@ function Mapping() {
           mappedTo: matchingField || null,
         };
       }
+
+      return col;
     });
 
     updateColumns(smartMappedColumns);
@@ -83,6 +85,16 @@ function Mapping() {
     const updatedColumns = fileData.columns.map((col, index) => ({
       ...col,
       mappedTo: columnIndex === index ? systemFieldId : col.mappedTo,
+    }));
+
+    updateColumns(updatedColumns);
+  };
+
+  // Removes a single mapping
+  const removeMapping = (columnIndex) => {
+    const updatedColumns = fileData.columns.map((col, index) => ({
+      ...col,
+      mappedTo: columnIndex === index ? null : col.mappedTo,
     }));
 
     updateColumns(updatedColumns);
@@ -129,6 +141,7 @@ function Mapping() {
                 ))}
               </select>
             </div>
+            <button onClick={() => removeMapping(columnIndex)}>x</button>
           </div>
         ))}
       </div>
