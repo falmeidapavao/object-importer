@@ -16,7 +16,12 @@ function PreviewTable({ columns = [], rows = [], showMappings = false }) {
       <thead>
         <tr>
           {columns.map((column, columnIndex) => (
-            <th key={columnIndex}>{column.columnName}</th>
+            <th key={columnIndex}>
+              {column.columnName}
+              {column.mappedTo !== null && showMappings
+                ? ` mapped to "${column.mappedTo}"`
+                : ""}
+            </th>
           ))}
         </tr>
       </thead>

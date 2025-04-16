@@ -37,7 +37,7 @@ function Upload() {
 
         if (!uploadResponse.ok) {
           throw new Error(
-            `Failed to upload file: ${response.status} - ${response.statusText}`
+            `Failed to upload file: ${uploadResponse.status} - ${uploadResponse.statusText}`
           );
         }
 

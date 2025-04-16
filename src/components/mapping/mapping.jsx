@@ -5,20 +5,25 @@ import { distance } from "fastest-levenshtein";
 
 function Mapping() {
   const [systemFields, setSystemFields] = useState([]);
+  const [hasAutoMapped, setHasAutoMapped] = useState(false);
   const { fileData, updateFileData } = useApp();
 
   useEffect(() => {
     // Fetch system fields from API
     const fetchSystemFields = async () => {
       try {
-        const systemFieldsResponse = await fetch(api.getSystemFields.url);
+        const systemFieldsResponse = await fetch(
+          api.getSystemFields.url,
+          api.getSystemFields.config
+        );
 
         if (!systemFieldsResponse.ok) {
-          throw new Error("Failed to get system fields");
+          throw new Error(
+            `Failed to get system fields: ${systemFieldsResponse.status} - ${systemFieldsResponse.statusText}`
+          );
         }
 
         const systemFieldsResult = await systemFieldsResponse.json();
-        console.log(systemFieldsResult);
         setSystemFields(systemFieldsResult);
       } catch (error) {
         console.error(
@@ -31,6 +36,29 @@ function Mapping() {
 
     fetchSystemFields();
   }, []);
+
+  useEffect(() => {
+    // After fetching system fields do a smart default mapping:
+    // excel columns that have similar names to system fields will be automatically mapped
+    // Do this once on mount.
+    if (hasAutoMapped || systemFields.length === 0) return;
+
+    const smartMappedColumns = fileData.columns.map((col) => {
+      if (!col.mappedTo) {
+        const matchingField = systemFields.find((systemFieldId) =>
+          fieldNameMatchesColumn(systemFieldId, col.columnName)
+        );
+
+        return {
+          ...col,
+          mappedTo: matchingField || null,
+        };
+      }
+    });
+
+    updateColumns(smartMappedColumns);
+    setHasAutoMapped(true);
+  }, [systemFields]);
 
   //
   // Mapping functions
@@ -46,21 +74,23 @@ function Mapping() {
     updateColumns(updatedColumns);
   };
 
-  // Maps
-  const systemFieldOnChange = (columnIndex, field) => {
+  // Maps an excel column into a system field
+  const updateMapping = (columnIndex, systemFieldId) => {
     // Set column mapping and remove selected system field from available options
-    // Validate if field options have been exhausted in other columns
+    // Validate if field is already in uyse
+    if (isFieldMapped(systemFieldId)) return;
+
     const updatedColumns = fileData.columns.map((col, index) => ({
       ...col,
-      mappedTo: columnIndex === index ? field : col.mappedTo,
+      mappedTo: columnIndex === index ? systemFieldId : col.mappedTo,
     }));
 
     updateColumns(updatedColumns);
   };
 
-  // Check if system field already has mapping
-  const isFieldMapped = (field) =>
-    fileData.columns.some((col) => col.mappedTo === field);
+  // Checks if system field already has mapping
+  const isFieldMapped = (systemFieldId) =>
+    fileData.columns.some((col) => col.mappedTo === systemFieldId);
 
   // Update data columns
   const updateColumns = (columns) => {
@@ -70,32 +100,7 @@ function Mapping() {
     });
   };
 
-  // Initializes system field dropdown
-  const initFieldDropdown = (column, columnIndex) => {
-    /*if (!column.mappedTo) {
-      // If column is not mapped check if any system field is similar to column name(smart initialization)
-      const matchingField = systemFields.find((field) =>
-        fieldNameMatchesColumn(field, column.columnName)
-      );
-
-      // Match found, set column mappedTo and return match
-      if (matchingField !== undefined) {
-        const updatedColumns = fileData.columns.map((col, index) => ({
-          ...col,
-          mappedTo: index === columnIndex ? matchingField : col.mappedTo,
-        }));
-
-        updateColumns(updateColumns);
-
-        return matchingField;
-      }
-    }*/
-
-    return column.mappedTo;
-  };
-
   // Check similarities between 2 strings(using levenshtein distance)
-  // to auto select system fields that match the name of imported file columns
   const fieldNameMatchesColumn = (systemField, column) =>
     distance(systemField, column) < 3;
 
@@ -109,19 +114,17 @@ function Mapping() {
             <div>{column.columnName}</div>
             <div>
               <select
-                value={initFieldDropdown(column, columnIndex)}
-                onChange={(e) =>
-                  systemFieldOnChange(columnIndex, e.target.value)
-                }
+                value={column.mappedTo || ""}
+                onChange={(e) => updateMapping(columnIndex, e.target.value)}
               >
                 <option value="">None</option>
-                {systemFields.map((field, fieldIndex) => (
+                {systemFields.map((systemFieldId, systemFieldIndex) => (
                   <option
-                    value={field}
-                    key={fieldIndex}
-                    disabled={isFieldMapped(field)}
+                    value={systemFieldId}
+                    key={systemFieldIndex}
+                    disabled={isFieldMapped(systemFieldId)}
                   >
-                    {field}
+                    {systemFieldId}
                   </option>
                 ))}
               </select>

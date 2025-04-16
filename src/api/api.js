@@ -13,7 +13,7 @@ const api = {
       },
     },
   },
-  getSystemFields: { url: `${baseUrl}/fields` },
+  getSystemFields: { url: `${baseUrl}/fields`, config: { method: "GET" } },
   sendMapping: { url: `${baseUrl}/mapping` },
   confirm: { url: `${baseUrl}/confirm` },
 };

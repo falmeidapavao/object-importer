@@ -15,7 +15,7 @@ export function AppProvider({ children }) {
 
   const previousStep = () =>
     setStep((currStep) => {
-      if (canStepBackwards(currStep)) return currStep - 1;
+      if (canStepBackwards()) return currStep - 1;
     });
 
   const canStepForward = () => {
