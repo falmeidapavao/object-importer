@@ -9,7 +9,20 @@ import DataPreview from "./components/data-preview/data-preview";
 import Summary from "./components/summary/summary";
 
 // Material
-import { Box, Button, Stepper, Step, StepLabel, Fade } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stepper,
+  Step,
+  StepLabel,
+  Fade,
+  Container,
+  AppBar,
+  Toolbar,
+  Typography,
+  Slide,
+} from "@mui/material";
+import { ChevronRight, ChevronLeft } from "@mui/icons-material";
 
 function App() {
   const { step, previousStep, nextStep, canStepForward, canStepBackwards } =
@@ -21,7 +34,7 @@ function App() {
       component: <Upload />,
       stepLabel: "File Upload",
       previousStepLabel: null,
-      nextStepLabel: "To mapping",
+      nextStepLabel: "Map your columns",
     },
     2: {
       component: <Mapping />,
@@ -44,25 +57,27 @@ function App() {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        p: 2,
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          rowGap: 3,
-        }}
+    <>
+      <AppBar
+        position="static"
+        color="default"
+        elevation={1}
+        sx={{ backgroundColor: (theme) => theme.palette.neutral0.main }}
       >
-        <h1>Object Importer</h1>
-        <Stepper activeStep={step - 1} alternativeLabel>
+        <Toolbar>
+          <Box
+            component="img"
+            src="src/assets/inventsys_logo.png"
+            alt="Inventsys Logo"
+            sx={{ height: 60, mr: 2, mt: 0.5 }}
+          />
+          <Typography variant="h6" component="div">
+            Object Importer
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Container maxWidth="md" sx={{ mt: 3 }}>
+        <Stepper activeStep={step - 1} sx={{ mb: 3 }}>
           {Object.keys(stepMap).map((stepNum) => (
             <Step key={stepNum}>
               <StepLabel>{stepMap[stepNum].stepLabel}</StepLabel>
@@ -76,21 +91,33 @@ function App() {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            mt: 3,
           }}
         >
           <Fade in={canStepBackwards()} timeout={1000}>
-            <Button variant="contained" color="primary" onClick={previousStep}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={previousStep}
+            >
+              <ChevronLeft sx={{ mr: 1 }} />
               {stepMap[step].previousStepLabel}
             </Button>
           </Fade>
-          <Fade in={canStepForward()} timeout={1000}>
-            <Button variant="contained" color="primary" onClick={nextStep}>
+          <Slide direction="left" timeout={1000} in={canStepForward()}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={nextStep}
+              sx={{ ml: 1 }}
+            >
               {stepMap[step].nextStepLabel}
+              <ChevronRight />
             </Button>
-          </Fade>
+          </Slide>
         </Box>
-      </Box>
-    </Box>
+      </Container>
+    </>
   );
 }
 

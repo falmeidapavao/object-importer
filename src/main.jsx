@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App.jsx";
 import { AppProvider } from "./contexts/AppContext.jsx";
 import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme/theme";
+import theme from "./material/theme/theme.js";
 import CssBaseline from "@mui/material/CssBaseline";
 import "@fontsource/roboto";
 

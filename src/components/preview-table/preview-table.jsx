@@ -1,4 +1,13 @@
 import React from "react";
+import {
+  TableContainer,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  Paper,
+} from "@mui/material";
 
 function PreviewTable({
   columns = [],
@@ -17,31 +26,33 @@ function PreviewTable({
   }
 
   return (
-    <table>
-      <thead>
-        <tr>
-          {columns.map((column, columnIndex) => (
-            <th key={columnIndex}>
-              {column.columnName}
-              {column.mappedTo !== null && showMappings
-                ? ` mapped to "${column.mappedTo}"`
-                : ""}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, rowIndex) => {
-          return (
-            <tr key={rowIndex}>
-              {Object.values(row).map((cell, cellIndex) => (
-                <td key={cellIndex}>{cell}</td>
-              ))}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {columns.map((column, columnIndex) => (
+              <TableCell key={columnIndex}>
+                {column.columnName}
+                {column.mappedTo !== null && showMappings
+                  ? ` mapped to "${column.mappedTo}"`
+                  : ""}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row, rowIndex) => {
+            return (
+              <TableRow key={rowIndex}>
+                {Object.values(row).map((cell, cellIndex) => (
+                  <TableCell key={cellIndex}>{cell}</TableCell>
+                ))}
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 

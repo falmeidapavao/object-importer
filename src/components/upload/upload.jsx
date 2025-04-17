@@ -1,70 +1,46 @@
 import React, { useState } from "react";
-import * as XLSX from "xlsx";
 import { useApp } from "./../../contexts/AppContext.jsx";
 import api from "./../../api/api.js";
 import PreviewTable from "./../preview-table/preview-table.jsx";
 
-const forcedLoadTime = 3000;
+// Material
+import { Box, Typography, Fade, Button } from "@mui/material";
+import { UploadFileOutlined } from "@mui/icons-material";
+import VisuallyHiddenInput from "../../material/visually-hidden-input.js";
 
 function Upload() {
   const { fileData, updateFileData, fileDataExists, updateHasAutoMapped } =
     useApp();
   const [isLoadingFile, setIsLoadingFile] = useState(false);
 
-  // File upload handler
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
+  // Mock file upload handler
+  const mockFileUpload = async (e) => {
     setIsLoadingFile(true);
 
-    // Get current timestamp to force a load time of at least 3 seconds
-    // This is for demo purposes only
-    const startTime = Date.now();
+    try {
+      // Reset auto mapping control flag when new file is uploaded
+      updateHasAutoMapped(false);
 
-    reader.onload = async (event) => {
-      try {
-        // Try and load the excel/csv
-        const data = new Uint8Array(event.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+      // Call API with file content and handle errors
+      const uploadResponse = await fetch(
+        api.uploadFile.url,
+        api.uploadFile.config
+      );
 
-        // Call API with file content and handle errors
-        const uploadResponse = await fetch(api.uploadFile.url, {
-          ...api.uploadFile.config,
-          body: JSON.stringify({ fileName: file.name, data: jsonData }),
-        });
-
-        if (!uploadResponse.ok) {
-          throw new Error(
-            `Failed to upload file: ${uploadResponse.status} - ${uploadResponse.statusText}`
-          );
-        }
-
-        // Map data from API to more suitable format
-        const uploadResult = await uploadResponse.json();
-        updateFileData(mapExcelData(uploadResult));
-
-        // Reset auto mapping control flag when new file is uploaded
-        updateHasAutoMapped(false);
-      } catch (error) {
-        console.error(
-          "An error ocurred when trying to upload you file:",
-          error
+      if (!uploadResponse.ok) {
+        throw new Error(
+          `Failed to upload file: ${uploadResponse.status} - ${uploadResponse.statusText}`
         );
-      } finally {
-        // Get the time elapsed during the upload
-        const elapsedTime = Date.now() - startTime;
-
-        // End loading after our forced loading time
-        setTimeout(() => {
-          setIsLoadingFile(false);
-        }, Math.max(forcedLoadTime - elapsedTime, 0));
       }
-    };
 
-    reader.readAsArrayBuffer(file);
+      // Map data from API to more suitable format
+      const uploadResult = await uploadResponse.json();
+      updateFileData(mapExcelData(uploadResult));
+    } catch (error) {
+      console.error("An error ocurred when trying to upload you file:", error);
+    } finally {
+      setIsLoadingFile(false);
+    }
   };
 
   // Map excel data that comes from API
@@ -104,25 +80,43 @@ function Upload() {
 
   return (
     <>
-      <div>This is the upload step!</div>
-      <div>
-        <input
-          type="file"
-          accept=".xlsx,.xls,.csv"
-          onChange={handleFileUpload}
-        />
-        {isLoadingFile ? (
-          <div>Loading...</div>
-        ) : fileDataExists() ? (
-          <PreviewTable
-            columns={fileData.columns}
-            rows={fileData.rows}
-            showMappings={false}
+      <Fade in timeout={2000}>
+        <Typography variant="h6" color="secondary" sx={{ mb: 4 }}>
+          To get started, upload your object file.
+        </Typography>
+      </Fade>
+      <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
+        <Button
+          loading={isLoadingFile}
+          component="label"
+          loadingPosition="start"
+          role={undefined}
+          variant="contained"
+          tabIndex={-1}
+          startIcon={<UploadFileOutlined />}
+        >
+          Upload files (xlsx, csv)
+          <VisuallyHiddenInput
+            type="file"
+            accept=".xlsx,.xls,.csv"
+            onChange={mockFileUpload}
           />
-        ) : (
-          ""
-        )}
-      </div>
+        </Button>
+      </Box>
+      {!isLoadingFile && fileDataExists() && (
+        <Fade in timeout={2000}>
+          <Box>
+            <Typography variant="h6" color="secondary" sx={{ mb: 2 }}>
+              Here is a preview of your data:
+            </Typography>
+            <PreviewTable
+              columns={fileData.columns}
+              rows={fileData.rows.slice(0, 5)}
+              showMappings={false}
+            />
+          </Box>
+        </Fade>
+      )}
     </>
   );
 }
