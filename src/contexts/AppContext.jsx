@@ -6,6 +6,7 @@ export const useApp = () => useContext(AppContext);
 export function AppProvider({ children }) {
   const [step, setStep] = useState(1);
   const [fileData, setFileData] = useState(null);
+  const [hasAutoMapped, setHasAutoMapped] = useState(false);
 
   // Step functions
   const nextStep = () =>
@@ -40,6 +41,11 @@ export function AppProvider({ children }) {
 
   const fileDataExists = () => fileData !== null;
 
+  // Smart map state fucntions
+  const updateHasAutoMapped = (hasAutoMapped) => {
+    setHasAutoMapped(hasAutoMapped);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -51,6 +57,8 @@ export function AppProvider({ children }) {
         fileData,
         updateFileData,
         fileDataExists,
+        hasAutoMapped,
+        updateHasAutoMapped,
       }}
     >
       {children}

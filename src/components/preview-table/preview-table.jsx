@@ -1,6 +1,11 @@
 import React from "react";
 
-function PreviewTable({ columns = [], rows = [], showMappings = false }) {
+function PreviewTable({
+  columns = [],
+  rows = [],
+  showMappings = false,
+  maxRecords = undefined,
+}) {
   // Validate invalid/no columns being passed
   if (!columns || columns.length === 0) {
     return <div>Please provide the columns for the table.</div>;

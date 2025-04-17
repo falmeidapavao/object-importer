@@ -41,9 +41,9 @@ function Summary() {
       <div>Imported rows: {summary.imported}</div>
       <div>Failed rows: {summary.failed}</div>
       <div>Errors: </div>
-      {(summary.errors || []).map((error) => (
+      {(summary.errors || []).map((error, errorIndex) => (
         <>
-          <div>
+          <div key={errorIndex}>
             Row: {error.row}: {error.message}
           </div>
         </>

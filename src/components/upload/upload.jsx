@@ -7,7 +7,8 @@ import PreviewTable from "./../preview-table/preview-table.jsx";
 const forcedLoadTime = 3000;
 
 function Upload() {
-  const { fileData, updateFileData, fileDataExists } = useApp();
+  const { fileData, updateFileData, fileDataExists, updateHasAutoMapped } =
+    useApp();
   const [isLoadingFile, setIsLoadingFile] = useState(false);
 
   // File upload handler
@@ -44,6 +45,9 @@ function Upload() {
         // Map data from API to more suitable format
         const uploadResult = await uploadResponse.json();
         updateFileData(mapExcelData(uploadResult));
+
+        // Reset auto mapping control flag when new file is uploaded
+        updateHasAutoMapped(false);
       } catch (error) {
         console.error(
           "An error ocurred when trying to upload you file:",

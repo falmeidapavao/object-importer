@@ -5,8 +5,8 @@ import { distance } from "fastest-levenshtein";
 
 function Mapping() {
   const [systemFields, setSystemFields] = useState([]);
-  const [hasAutoMapped, setHasAutoMapped] = useState(false);
-  const { fileData, updateFileData } = useApp();
+  const { fileData, updateFileData, hasAutoMapped, updateHasAutoMapped } =
+    useApp();
 
   useEffect(() => {
     // Fetch system fields from API
@@ -59,7 +59,7 @@ function Mapping() {
     });
 
     updateColumns(smartMappedColumns);
-    setHasAutoMapped(true);
+    updateHasAutoMapped(true);
   }, [systemFields]);
 
   //
@@ -79,7 +79,7 @@ function Mapping() {
   // Maps an excel column into a system field
   const updateMapping = (columnIndex, systemFieldId) => {
     // Set column mapping and remove selected system field from available options
-    // Validate if field is already in uyse
+    // Validate if field is already in use
     if (isFieldMapped(systemFieldId)) return;
 
     const updatedColumns = fileData.columns.map((col, index) => ({
