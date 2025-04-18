@@ -11,6 +11,12 @@ const theme = createTheme({
     neutral0: {
       main: "#ffffff",
     },
+    error: {
+      main: "#c25450",
+    },
+    success: {
+      main: "#00bf79",
+    },
   },
   typography: {
     fontFamily: "Roboto, Helvetica, Arial, sans-serif",
@@ -38,6 +44,13 @@ const theme = createTheme({
       styleOverrides: {
         head: {
           fontWeight: "bold",
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: "8px",
         },
       },
     },

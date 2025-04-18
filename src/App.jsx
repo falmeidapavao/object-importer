@@ -15,7 +15,6 @@ import {
   Stepper,
   Step,
   StepLabel,
-  Fade,
   Container,
   AppBar,
   Toolbar,
@@ -45,7 +44,7 @@ function App() {
     3: {
       component: <DataPreview />,
       stepLabel: "Data Preview",
-      previousStepLabel: "Back to mappings",
+      previousStepLabel: "Adjust mappings",
       nextStepLabel: "Confirm & Upload",
     },
     4: {
@@ -59,7 +58,7 @@ function App() {
   return (
     <>
       <AppBar
-        position="static"
+        position="fixed"
         color="default"
         elevation={1}
         sx={{ backgroundColor: (theme) => theme.palette.neutral0.main }}
@@ -76,7 +75,7 @@ function App() {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="md" sx={{ mt: 3 }}>
+      <Container maxWidth="md" sx={{ pt: 3, pb: 3 }}>
         <Stepper activeStep={step - 1} sx={{ mb: 3 }}>
           {Object.keys(stepMap).map((stepNum) => (
             <Step key={stepNum}>
@@ -85,38 +84,45 @@ function App() {
           ))}
         </Stepper>
         {stepMap[step].component}
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mt: 3,
-          }}
-        >
-          <Fade in={canStepBackwards()} timeout={1000}>
+      </Container>
+      <AppBar
+        position="fixed"
+        color="default"
+        elevation={1}
+        sx={{
+          top: "auto",
+          bottom: 0,
+          backgroundColor: (theme) => theme.palette.neutral0.main,
+        }}
+      >
+        <Toolbar>
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
             <Button
               variant="contained"
               color="secondary"
               onClick={previousStep}
+              sx={{ visibility: canStepBackwards() ? "visible" : "hidden" }}
             >
-              <ChevronLeft sx={{ mr: 1 }} />
+              <ChevronLeft sx={{ mr: 0.5 }} />
               {stepMap[step].previousStepLabel}
             </Button>
-          </Fade>
-          <Slide direction="left" timeout={1000} in={canStepForward()}>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={nextStep}
-              sx={{ ml: 1 }}
-            >
-              {stepMap[step].nextStepLabel}
-              <ChevronRight />
-            </Button>
-          </Slide>
-        </Box>
-      </Container>
+            <Slide direction="left" timeout={1000} in={canStepForward()}>
+              <Button variant="contained" color="secondary" onClick={nextStep}>
+                {stepMap[step].nextStepLabel}
+                <ChevronRight sx={{ ml: 0.5 }} />
+              </Button>
+            </Slide>
+          </Box>
+        </Toolbar>
+      </AppBar>
     </>
   );
 }

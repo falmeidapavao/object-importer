@@ -81,11 +81,11 @@ function Upload() {
   return (
     <>
       <Fade in timeout={2000}>
-        <Typography variant="h6" color="secondary" sx={{ mb: 4 }}>
+        <Typography variant="h6" color="secondary" sx={{ mb: 3 }}>
           To get started, upload your object file.
         </Typography>
       </Fade>
-      <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
         <Button
           loading={isLoadingFile}
           component="label"
