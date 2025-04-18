@@ -61,21 +61,24 @@ function App() {
         position="fixed"
         color="default"
         elevation={1}
-        sx={{ backgroundColor: (theme) => theme.palette.neutral0.main }}
+        sx={{
+          height: 52,
+          backgroundColor: (theme) => theme.palette.neutral0.main,
+        }}
       >
-        <Toolbar>
+        <Toolbar variant="dense" sx={{ minHeight: "inherit" }}>
           <Box
             component="img"
             src="src/assets/inventsys_logo.png"
             alt="Inventsys Logo"
-            sx={{ height: 60, mr: 2, mt: 0.5 }}
+            sx={{ height: 48, mr: 2, mt: 0.5 }}
           />
           <Typography variant="h6" component="div">
             Object Importer
           </Typography>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="md" sx={{ pt: 3, pb: 3 }}>
+      <Container maxWidth="md" sx={{ pt: 10, pb: 10 }}>
         <Stepper activeStep={step - 1} sx={{ mb: 3 }}>
           {Object.keys(stepMap).map((stepNum) => (
             <Step key={stepNum}>
@@ -90,12 +93,14 @@ function App() {
         color="default"
         elevation={1}
         sx={{
+          height: 52,
+          justifyContent: "center",
           top: "auto",
           bottom: 0,
           backgroundColor: (theme) => theme.palette.neutral0.main,
         }}
       >
-        <Toolbar>
+        <Toolbar variant="dense" sx={{ minHeight: "inherit" }}>
           <Box
             sx={{
               width: "100%",
@@ -105,21 +110,41 @@ function App() {
               justifyContent: "space-between",
             }}
           >
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={previousStep}
-              sx={{ visibility: canStepBackwards() ? "visible" : "hidden" }}
-            >
-              <ChevronLeft sx={{ mr: 0.5 }} />
-              {stepMap[step].previousStepLabel}
-            </Button>
-            <Slide direction="left" timeout={1000} in={canStepForward()}>
-              <Button variant="contained" color="secondary" onClick={nextStep}>
-                {stepMap[step].nextStepLabel}
-                <ChevronRight sx={{ ml: 0.5 }} />
-              </Button>
-            </Slide>
+            <Box>
+              {canStepBackwards() ? (
+                <Slide direction="right" timeout={1000} in={canStepBackwards()}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={previousStep}
+                    sx={{
+                      visibility: canStepBackwards() ? "visible" : "hidden",
+                    }}
+                  >
+                    <ChevronLeft sx={{ mr: 0.5 }} />
+                    {stepMap[step].previousStepLabel}
+                  </Button>
+                </Slide>
+              ) : (
+                ""
+              )}
+            </Box>
+            <Box>
+              {canStepForward() ? (
+                <Slide direction="left" timeout={1000} in={canStepForward()}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={nextStep}
+                  >
+                    {stepMap[step].nextStepLabel}
+                    <ChevronRight sx={{ ml: 0.5 }} />
+                  </Button>
+                </Slide>
+              ) : (
+                ""
+              )}
+            </Box>
           </Box>
         </Toolbar>
       </AppBar>
