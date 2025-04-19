@@ -45,38 +45,40 @@ function DataPreview() {
 
   return (
     <Fade in timeout={2000}>
-      <Typography variant="h6" color="secondary" sx={{ mb: 1 }}>
-        Here is a wrap up of your mapping:
-      </Typography>
-      {getInvalidRows().length > 0 ? (
-        <Alert severity="error" sx={{ mb: 1 }}>
-          <Box>You have missing values in some fields</Box>
-          {getInvalidRows().map((row, rowIndex) => (
-            <Box
-              key={rowIndex}
-              sx={{ display: "flex", alignItems: "center", columnGap: 0.5 }}
-            >
-              <Circle sx={{ fontSize: "0.4rem" }} />
-              <Box>
-                Row {row.rowNum}:{" "}
-                {row.missingRowValues.map((missingValue) => missingValue)}
+      <Box>
+        <Typography variant="h6" color="secondary" sx={{ mb: 1 }}>
+          Here is a wrap up of your mapping:
+        </Typography>
+        {getInvalidRows().length > 0 ? (
+          <Alert severity="error" sx={{ mb: 1 }}>
+            <Box>You have missing values in some fields</Box>
+            {getInvalidRows().map((row, rowIndex) => (
+              <Box
+                key={rowIndex}
+                sx={{ display: "flex", alignItems: "center", columnGap: 0.5 }}
+              >
+                <Circle sx={{ fontSize: "0.4rem" }} />
+                <Box>
+                  Row {row.rowNum}:{" "}
+                  {row.missingRowValues.map((missingValue) => missingValue)}
+                </Box>
               </Box>
-            </Box>
-          ))}
+            ))}
+          </Alert>
+        ) : (
+          ""
+        )}
+        <Alert severity={getMappedColumnsAlertSeverity()} sx={{ mb: 3 }}>
+          {getMappedColumnsAlertText()}
         </Alert>
-      ) : (
-        ""
-      )}
-      <Alert severity={getMappedColumnsAlertSeverity()} sx={{ mb: 3 }}>
-        {getMappedColumnsAlertText()}
-      </Alert>
-      <PreviewTable
-        columns={fileData.columns}
-        rows={fileData.rows}
-        showMappings={true}
-        hasPagination={true}
-        rowsPerPage={5}
-      />
+        <PreviewTable
+          columns={fileData.columns}
+          rows={fileData.rows}
+          showMappings={true}
+          hasPagination={true}
+          rowsPerPage={5}
+        />
+      </Box>
     </Fade>
   );
 }

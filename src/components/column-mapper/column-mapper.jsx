@@ -97,9 +97,12 @@ const ColumnMapper = forwardRef((_, ref) => {
     // Validate if field is already in use
     if (isFieldMapped(systemFieldId)) return;
 
+    // Convert entries from empty select option to null to respect structure format
+    const effectiveFieldId = systemFieldId === "" ? null : systemFieldId;
+
     const updatedColumns = fileData.columns.map((col, index) => ({
       ...col,
-      mappedTo: columnIndex === index ? systemFieldId : col.mappedTo,
+      mappedTo: columnIndex === index ? effectiveFieldId : col.mappedTo,
     }));
 
     updateColumns(updatedColumns);
