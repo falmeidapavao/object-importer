@@ -77,7 +77,7 @@ function PreviewTable({
                     <Box>{column.columnName}</Box>
                     {columnHasMapping(column) && showMappings && (
                       <>
-                        <ArrowDownward />
+                        <ArrowDownward sx={{ fontSize: "1rem" }} />
                         <Box
                           sx={{ color: (theme) => theme.palette.error.main }}
                         >
