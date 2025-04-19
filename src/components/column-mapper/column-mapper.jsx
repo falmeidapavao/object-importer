@@ -14,6 +14,7 @@ import { ArrowForward } from "@mui/icons-material";
 
 const ColumnMapper = forwardRef((_, ref) => {
   const [systemFields, setSystemFields] = useState([]);
+  const [isLoadingFields, setIsLoadingFields] = useState(false);
   const { fileData, updateFileData, hasAutoMapped, updateHasAutoMapped } =
     useApp();
 
@@ -21,6 +22,8 @@ const ColumnMapper = forwardRef((_, ref) => {
     // Fetch system fields from API
     const fetchSystemFields = async () => {
       try {
+        setIsLoadingFields(true);
+
         const systemFieldsResponse = await fetch(
           api.getSystemFields.url,
           api.getSystemFields.config
@@ -40,6 +43,7 @@ const ColumnMapper = forwardRef((_, ref) => {
           error.message
         );
       } finally {
+        setIsLoadingFields(false);
       }
     };
 
@@ -168,15 +172,21 @@ const ColumnMapper = forwardRef((_, ref) => {
                   displayEmpty
                 >
                   <MenuItem value="">None</MenuItem>
-                  {systemFields.map((systemFieldId, systemFieldIndex) => (
-                    <MenuItem
-                      value={systemFieldId}
-                      key={systemFieldIndex}
-                      disabled={isFieldMapped(systemFieldId)}
-                    >
-                      {systemFieldId}
+                  {isLoadingFields ? (
+                    <MenuItem disabled value="">
+                      Loading...
                     </MenuItem>
-                  ))}
+                  ) : (
+                    systemFields.map((systemFieldId, systemFieldIndex) => (
+                      <MenuItem
+                        value={systemFieldId}
+                        key={systemFieldIndex}
+                        disabled={isFieldMapped(systemFieldId)}
+                      >
+                        {systemFieldId}
+                      </MenuItem>
+                    ))
+                  )}
                 </Select>
               </FormControl>
             </Box>
