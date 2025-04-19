@@ -75,7 +75,7 @@ const ColumnMapper = forwardRef((_, ref) => {
     updateHasAutoMapped(true);
   }, [systemFields]);
 
-  // Resets an existing mapping
+  // Resets all mappings
   const resetMapping = () => {
     const updatedColumns = fileData.columns.map((col) => ({
       ...col,
@@ -85,7 +85,7 @@ const ColumnMapper = forwardRef((_, ref) => {
     updateColumns(updatedColumns);
   };
 
-  // Expose reset mapping function to parent components
+  // Exposes reset mapping function to parent components
   useImperativeHandle(ref, () => ({
     resetColumnMappings() {
       resetMapping();
@@ -94,7 +94,6 @@ const ColumnMapper = forwardRef((_, ref) => {
 
   // Maps an excel column into a system field
   const updateMapping = (columnIndex, systemFieldId) => {
-    // Set column mapping and remove selected system field from available options
     // Validate if field is already in use
     if (isFieldMapped(systemFieldId)) return;
 
@@ -108,19 +107,19 @@ const ColumnMapper = forwardRef((_, ref) => {
 
   // Checks if system field already has mapping
   const isFieldMapped = (systemFieldId) =>
-    fileData.columns.some((col) => col.mappedTo === systemFieldId);
+    fileData.columns.find((col) => col.mappedTo === systemFieldId);
 
-  // Update data columns
+  // Checks similarities between 2 strings(using levenshtein distance)
+  const fieldNameMatchesColumn = (systemField, column) =>
+    distance(systemField, column) < 3;
+
+  // Updates data columns
   const updateColumns = (columns) => {
     updateFileData({
       ...fileData,
       columns,
     });
   };
-
-  // Check similarities between 2 strings(using levenshtein distance)
-  const fieldNameMatchesColumn = (systemField, column) =>
-    distance(systemField, column) < 3;
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>

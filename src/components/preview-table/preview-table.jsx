@@ -12,18 +12,19 @@ import {
   Paper,
   TablePagination,
   Typography,
+  Tooltip,
 } from "@mui/material";
-import { ArrowDownward } from "@mui/icons-material";
+import { ArrowDownward, ErrorOutline } from "@mui/icons-material";
 
 function PreviewTable({
   columns = [],
   rows = [],
   showMappings = false,
   hasPagination = false,
+  rowsPerPage = 10,
 }) {
   // Pagination state
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const paginatedRows = rows.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
@@ -74,7 +75,7 @@ function PreviewTable({
                     }}
                   >
                     <Box>{column.columnName}</Box>
-                    {columnHasMapping(column) && showMappings ? (
+                    {columnHasMapping(column) && showMappings && (
                       <>
                         <ArrowDownward />
                         <Box
@@ -83,8 +84,6 @@ function PreviewTable({
                           "{column.mappedTo}"
                         </Box>
                       </>
-                    ) : (
-                      ""
                     )}
                   </Box>
                 </TableCell>
@@ -97,7 +96,13 @@ function PreviewTable({
                 <TableRow key={rowIndex}>
                   {Object.values(row).map((cell, cellIndex) => (
                     <TableCell key={cellIndex} align="right">
-                      {cell}
+                      {cell || (
+                        <Tooltip title="Missing value" placement="top">
+                          <ErrorOutline
+                            sx={{ color: (theme) => theme.palette.error.main }}
+                          />
+                        </Tooltip>
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>

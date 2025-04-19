@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useApp } from "./../../contexts/AppContext.jsx";
 import api from "./../../api/api.js";
 import PreviewTable from "./../preview-table/preview-table.jsx";
+import setInvalidCells from "../../utils/setInvalidCells.js";
 
 // Material
 import { Box, Typography, Fade, Button } from "@mui/material";
@@ -66,13 +67,15 @@ function Upload() {
         columnName: headerName,
         mappedTo: null, // Start with no mapping, to be filled later
       })),
-      rows: data.map((row) =>
-        row.reduce(
-          (acc, columnValue, index) => ({
-            ...acc,
-            [headers[index]]: columnValue,
-          }),
-          {}
+      rows: setInvalidCells(
+        data.map((row) =>
+          row.reduce(
+            (acc, columnValue, index) => ({
+              ...acc,
+              [headers[index]]: columnValue,
+            }),
+            {}
+          )
         )
       ),
     };
@@ -81,28 +84,30 @@ function Upload() {
   return (
     <>
       <Fade in timeout={2000}>
-        <Typography variant="h6" color="secondary" sx={{ mb: 3 }}>
-          To get started, upload your object file.
-        </Typography>
+        <Box>
+          <Typography variant="h6" color="secondary" sx={{ mb: 3 }}>
+            To get started, upload your object file.
+          </Typography>
+          <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+            <Button
+              loading={isLoadingFile}
+              component="label"
+              loadingPosition="start"
+              role={undefined}
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<UploadFileOutlined />}
+            >
+              Upload files (xlsx, csv)
+              <VisuallyHiddenInput
+                type="file"
+                accept=".xlsx,.xls,.csv"
+                onChange={mockFileUpload}
+              />
+            </Button>
+          </Box>
+        </Box>
       </Fade>
-      <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
-        <Button
-          loading={isLoadingFile}
-          component="label"
-          loadingPosition="start"
-          role={undefined}
-          variant="contained"
-          tabIndex={-1}
-          startIcon={<UploadFileOutlined />}
-        >
-          Upload files (xlsx, csv)
-          <VisuallyHiddenInput
-            type="file"
-            accept=".xlsx,.xls,.csv"
-            onChange={mockFileUpload}
-          />
-        </Button>
-      </Box>
       {!isLoadingFile && fileDataExists() && (
         <Fade in timeout={2000}>
           <Box>
