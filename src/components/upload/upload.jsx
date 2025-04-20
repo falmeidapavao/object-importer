@@ -67,7 +67,7 @@ function Upload() {
         columnName: headerName,
         mappedTo: null, // Start with no mapping, to be filled later
       })),
-      rows: setInvalidCells(
+      rows: simulateInvalidCells(
         data.map((row) =>
           row.reduce(
             (acc, columnValue, index) => ({
