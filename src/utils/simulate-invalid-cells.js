@@ -14,4 +14,4 @@ const simulateInvalidCells = (rows) => {
   });
 };
 
-export default setInvalidCells;
+export default simulateInvalidCells;

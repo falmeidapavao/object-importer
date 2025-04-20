@@ -1,12 +1,59 @@
-# React + Vite
+# Object Importer (ReactJS)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A step-by-step **Object Importer wizard** built with ReactJS. This project allows users to upload CSV/XLSX files, map columns to internal fields, preview the data, and confirm the import with error handling and validation.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Upload `.csv` and `.xlsx` files (up to 50,000 rows)
+- Live data preview (first 5–10 rows)
+- Column-to-field mapping with validation
+- Inline error/warning display
+- Import summary with success and error breakdown
+- Responsive UI with Material UI
+- State management with Context API
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Wizard Steps
+
+1. **File Upload**
+
+   - Drag & drop or select `.csv`/`.xlsx` file
+   - Shows a loading spinner while parsing
+   - Error handling for invalid formats or structure
+
+2. **Column Mapping**
+
+   - Map uploaded columns to internal fields using `<Select />`
+   - Enforces required field mappings
+
+3. **Data Preview**
+
+   - Preview mapped data with inline validation
+   - Navigate back to fix mappings if needed
+
+4. **Mapping results & Summary**
+   - Simulate API submission
+   - Displays import summary (success, errors, warnings)
+
+---
+
+## Tech Stack
+
+- React with Hooks
+- Material UI for styling
+- Context API for global state
+
+---
+
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Start the dev server
+npm run dev
+```

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useApp } from "./../../contexts/AppContext.jsx";
 import api from "./../../api/api.js";
 import PreviewTable from "./../preview-table/preview-table.jsx";
-import setInvalidCells from "../../utils/setInvalidCells.js";
+import simulateInvalidCells from "../../utils/simulate-invalid-cells.js";
 
 // Material
 import { Box, Typography, Fade, Button } from "@mui/material";
