@@ -53,7 +53,7 @@ const ColumnMapper = forwardRef((_, ref) => {
   useEffect(() => {
     // After fetching system fields do a smart default mapping:
     // excel columns that have similar names to system fields will be automatically mapped
-    // Do this once on mount.
+    // Do this once after the assigment of system fields.
     if (hasAutoMapped || systemFields.length === 0) return;
 
     const smartMappedColumns = fileData.columns.map((col) => {
@@ -116,7 +116,7 @@ const ColumnMapper = forwardRef((_, ref) => {
   const fieldNameMatchesColumn = (systemField, column) =>
     distance(systemField, column) < 3;
 
-  // Updates data columns
+  // Updates data columns in context
   const updateColumns = (columns) => {
     updateFileData({
       ...fileData,

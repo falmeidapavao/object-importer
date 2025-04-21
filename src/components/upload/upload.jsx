@@ -34,7 +34,7 @@ function Upload() {
         );
       }
 
-      // Map data from API to more suitable format
+      // Map data from API to more suitable format and send to context
       const uploadResult = await uploadResponse.json();
       updateFileData(mapExcelData(uploadResult));
     } catch (error) {
